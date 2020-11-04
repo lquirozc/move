@@ -1,0 +1,54 @@
+<div class="mv-container-table" [ngClass]="{'p-0': noPadding === 'yes'}">
+
+    <pagination [totalItems]="(JSONdata | customFilter:searcherText).length" [itemsPerPage]="itemsPerPage" [maxSize]="5"
+        [(ngModel)]="currentPage" previousText="&lsaquo;" nextText="&rsaquo;">
+    </pagination>
+    <table class="mv-form-table">
+        <thead class="header">
+            <td [ngClass]="{'orderable' : item.id == currentOrderField,'asc': !descending, 'desc': descending}"
+                *ngFor="let item of dataValues;let i = index;" (click)="orderColumn(item.id)">
+                {{item.header}}
+            </td>
+            <td class="actions" [ngClass]="{'d-none': hasActions === 'no'}">Acciones
+                <span (click)="_onNew()" class="icon-plus-circle-solid" *ngIf="!(isEditing | async) && newitem === true"></span>
+                <button type="button" (click)="_onSubmit()" *ngIf="(isEditing | async)">
+                    <span class="icon-check-solid"></span>
+                </button>
+                <button type="button" (click)="_onCancel()" *ngIf="(isEditing | async)">
+                    <span class="icon-times-circle-solid"></span>
+                </button>
+            </td>
+        </thead>
+        <tbody class="body">
+            <tr class="mv-form-row">
+                <td [attr.colspan]="dataValues.length + (hasActions === 'no' ? 0 : 1)">
+                    <div class="row toggable m-0" [ngClass]="{'active' : (isEditing | async)}">
+                        <div class="col-12 p-0 m-0">
+                            <custom-table-placeholder name="custom-form"></custom-table-placeholder>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr class="mv-row"
+                *ngFor="let item of (((JSONdata | orderBy:currentOrderField : descending : true) | customFilter:searcherText) | slice:(currentPage-1)*itemsPerPage:currentPage*itemsPerPage); let i = index;"
+                [ngClass]="{'active-editing': !(isNew | async) && (isEditing | async) && activeRowEditId == item[keyValue]}">
+                <td *ngFor="let values of dataValues;let i = index;">
+                    <div *ngIf="values.id != null">
+                        {{ (!values.currency ?  item[values.id] : item[values.id] | customCurrency) }}
+                    </div>
+                    <div [innerHtml]="values.template">
+
+                    </div>
+
+                </td>
+                <td class="actions" [ngClass]="{'d-none': hasActions === 'no'}">
+                    <span (click)="_onActiveItem(item[keyValue])" class="icon-check-solid state state"
+                        *ngIf="item.estado !== undefined" [ngClass]="{'active': item.estado}"></span>
+                    <span class="icon-pencil-alt-solid"
+                        [ngClass]="{'active-editing': !(isNew | async) && (isEditing | async) && activeRowEditId == item[keyValue]}"
+                        (click)="_onItemEdit(item[keyValue]); activeRowEditId = item[keyValue];"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

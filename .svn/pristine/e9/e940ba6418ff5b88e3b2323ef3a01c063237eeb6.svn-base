@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Historial de solicitudes</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cancelForm()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form id="modal-form" [formGroup]="registerForm">
+    <div class="modal-body">
+        <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText"
+            itemsPerPage="10" hasActions="no" noPadding="yes" keyValue="idSolicitud" (onCancel)="cancelForm()">            
+        </custom-datatable>
+    </div>
+</form>

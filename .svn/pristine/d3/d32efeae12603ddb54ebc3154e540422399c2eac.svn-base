@@ -1,0 +1,144 @@
+<master-admin-content placeholder="header">
+    <div class="custom-header row">
+        <div class="col-4 offset-1 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-th-solid"></span>
+                </span>
+                <input type="text" class="mv-input" value="Servicios de mensajería" readonly>
+            </div>
+        </div>
+        <div class="col-4 offset-2 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-search-solid"></span>
+                </span>
+                <input type="text" class="mv-input" [(ngModel)]="searcherText">
+            </div>
+        </div>
+    </div>
+</master-admin-content>
+
+
+<master-admin-content placeholder="main">
+    <div class="card mv-card">
+        <h5 class="card-header">Servidor de email
+            <button type="button" (click)="onSubmitSMTP()">
+                <span class="icon-check-solid"></span>
+            </button>
+        </h5>
+        <div class="card-body mv-card-body">
+            <form id="modal-form" [formGroup]="registerSMTPForm">
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Puerto SMTP</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Puerto SMTP"
+                            formControlName="puertoSMTP"
+                            [ngClass]="{ 'is-invalid': submittedSMTPForm && f.puertoSMTP.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Usuario SMTP</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Usuario SMTP"
+                            formControlName="usuarioSMTP"
+                            [ngClass]="{ 'is-invalid': submittedSMTPForm && f.usuarioSMTP.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Contraseña SMTP</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                            placeholder="Contraseña SMTP" formControlName="contrasenaSMTP"
+                            [ngClass]="{ 'is-invalid': submittedSMTPForm && f.contrasenaSMTP.errors }">
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mv-card">
+        <h5 class="card-header">Servidor de SMS
+            <button type="button" (click)="onSubmitMSM()">
+                <span class="icon-check-solid"></span>
+            </button>
+        </h5>
+        <div class="card-body mv-card-body">
+            <form id="modal-form" [formGroup]="registerMSMForm">
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Pais</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Pais"
+                            formControlName="paisSMS"
+                            [ngClass]="{ 'is-invalid': submittedMSMForm && g.paisSMS.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Indicativo</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Indicativo"
+                            formControlName="indcativoSMS"
+                            [ngClass]="{ 'is-invalid': submittedMSMForm && g.indcativoSMS.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Api key SMS</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Api key SMS"
+                            formControlName="apiKeySMS"
+                            [ngClass]="{ 'is-invalid': submittedMSMForm && g.apiKeySMS.errors }">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Usuario SMS</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Usuario SMS"
+                            formControlName="usuarioSMS"
+                            [ngClass]="{ 'is-invalid': submittedMSMForm && g.usuarioSMS.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Contraseña SMS</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                            placeholder="Contraseña SMS" formControlName="contrasenaSMS"
+                            [ngClass]="{ 'is-invalid': submittedMSMForm && g.contrasenaSMS.errors }">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mv-card">
+        <h5 class="card-header">Servidor de correo masivo
+            <button type="button" (click)="onSubmitSendGrid()">
+                <span class="icon-check-solid"></span>
+            </button>
+        </h5>
+        <div class="card-body mv-card-body">
+            <form id="modal-form" [formGroup]="registerSendGridForm">
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Api key send grid</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                            placeholder="Api key send grid" formControlName="apiKeySendGrid"
+                            [ngClass]="{ 'is-invalid': submittedSendGridForm && h.apiKeySendGrid.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Api key fire base</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                            placeholder="Api key fire base" formControlName="apiKeyFirebase"
+                            [ngClass]="{ 'is-invalid': submittedSendGridForm && h.apiKeyFirebase.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Usuario send grid</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                            placeholder="Usuario send grid" formControlName="usuarioSendGrid"
+                            [ngClass]="{ 'is-invalid': submittedSendGridForm && h.usuarioSendGrid.errors }">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Contraseña send grid</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                            placeholder="Contraseña send grid" formControlName="contrasenaSendGrid"
+                            [ngClass]="{ 'is-invalid': submittedSendGridForm && h.contrasenaSendGrid.errors }">
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</master-admin-content>

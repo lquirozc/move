@@ -1,0 +1,7 @@
+<master-admin-content placeholder="header">
+    Custom Header here!!
+</master-admin-content>
+
+<master-admin-content placeholder="main">
+    <p>comissions works!</p>
+</master-admin-content>

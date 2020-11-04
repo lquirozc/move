@@ -1,0 +1,24 @@
+img.vertical {
+    width: 160px;
+    display: block;
+    margin: 0 auto;
+}
+
+img.horizontal {
+    width: 260px;
+    display: block;
+    margin: 0 auto;
+}
+
+ul.certificates {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+
+    li {
+        width: 33.33333333333333%;
+        padding: 10px 15px;
+    }
+}

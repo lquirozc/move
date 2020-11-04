@@ -1,0 +1,8 @@
+<div *ngIf="isLoading | async" class="loader-wrapper">
+    <!-- <img alt="" src="./assets/images/logos/logowhite.png" /> -->
+    <div class="loader-transporter">
+        <div class="spin-loader">
+          <span class="icon-spin-logo"></span>
+        </div>
+      </div>
+</div>

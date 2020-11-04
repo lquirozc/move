@@ -1,0 +1,45 @@
+.mv-card {
+    width: 75%;
+    margin: 30px auto;
+}
+
+h5.card-header {
+    color: var(--mv-table-text);
+    background-color: var(--mv-bgtable);
+}
+
+button {
+    border: none;
+    background: transparent;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    color: var(--mv-table-text);
+    float: right;;
+}
+[class^="icon-"]:hover {
+    color: var(--mv-primary-color);
+}
+
+.mv-card-body {
+    input.mv-input-form,
+    textarea.mv-input-form,
+    select.mv-input-form {
+        border: 1px solid rgba(112, 112, 112, 0.43);
+        outline: none !important;
+        font-size: 14px;
+        padding: 5px 10px;
+        margin: 5px 0;
+        width: 100%;
+        color: var(--mv-table-text);
+
+        &.is-invalid {
+            border-color: rgba(255, 0, 0, 1);
+            -webkit-box-shadow: 0px 0px 6px -2px rgba(255, 0, 0, 1);
+            -moz-box-shadow: 0px 0px 6px -2px rgba(255, 0, 0, 1);
+            box-shadow: 0px 0px 6px -2px rgba(255, 0, 0, 1);
+        }
+    }
+}

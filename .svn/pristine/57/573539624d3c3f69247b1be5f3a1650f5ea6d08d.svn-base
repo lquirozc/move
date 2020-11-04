@@ -1,0 +1,15 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-resolution-invoicings',
+  templateUrl: './resolution-invoicings.component.html',
+  styleUrls: ['./resolution-invoicings.component.scss']
+})
+export class ResolutionInvoicingsComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}

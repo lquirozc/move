@@ -1,0 +1,23 @@
+<custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+    hasActions="yes" keyValue="idComercio" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+    (onCancel)="cancelForm()" (onActiveItem)="changeState($event)">
+
+    <custom-table-content placeholder="custom-form">
+        <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-6">
+                    <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Tipo de comercio"
+                        formControlName="descripcion"
+                        [ngClass]="{ 'is-invalid': submittedForm && f.descripcion.errors }">
+                </div>
+                <div class="col-6">
+                    <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                        placeholder="Valor minimo sesión" formControlName="valorMinimoSesion"
+                        [ngClass]="{ 'is-invalid': submittedForm && f.valorMinimoSesion.errors }">
+                </div>
+            </div>
+            <button type="submit" class="d-none">
+            </button>
+        </form>
+    </custom-table-content>
+</custom-datatable>

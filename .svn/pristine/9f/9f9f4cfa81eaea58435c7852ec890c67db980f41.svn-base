@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="row pt-5 mb-5">
+        <div class="col-12">
+            <div class="logo">
+                <img src="assets/img/logos/Move.svg">
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <div class="jumbotron text-center">
+                <h1>404</h1>
+                <h5>Página no encontrada</h5>
+                <label class="username mb-3 mt-3">La página que buscabas no existe o ha ocurrido un error.</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <label class="water-mark">Developed by: Sibo Avance S.A.S </label>
+        </div>
+    </div>
+</div>

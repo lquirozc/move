@@ -1,0 +1,72 @@
+<master-admin-content placeholder="header">
+    <div class="custom-header row">
+      <div class="col-4 offset-1 pt-2">
+        <div class="mv-input-group">
+          <span class="mv-input-group-prepend">
+            <span class="icon-th-solid"></span>
+          </span>
+          <input type="text" class="mv-input" value="Solicitudes" readonly>
+        </div>
+      </div>
+      <div class="col-4 offset-2 pt-2">
+        <div class="mv-input-group">
+          <span class="mv-input-group-prepend">
+            <span class="icon-search-solid"></span>
+          </span>
+          <input type="text" class="mv-input" [(ngModel)]="searcherText">
+        </div>
+      </div>
+    </div>
+  </master-admin-content>
+
+  <master-admin-content placeholder="main">
+
+    <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+      hasActions="yes" keyValue="idTerminos" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+      (onCancel)="cancelForm()">
+  
+      <custom-table-content placeholder="custom-form">
+        <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-8">
+              <div class="mv-input-group has-label">
+                <label class="title">Tipo de contrato</label>
+                <label>
+                  <select formControlName="idPlantillaTerminos" (keydown.esc)="cancelForm()" class="mv-input-form"
+                    [ngClass]="{ 'is-invalid': submittedForm && f.idPlantillaTerminos.errors }"
+                    (change)="onChangeTipoContrato()">
+                    <option value="">Seleccione</option>
+                    <option *ngFor="let item of JSONdataTiposContrato" [value]="item.idPlantillaTerminos">
+                      {{item.descripcion}}
+                    </option>
+                  </select>
+                </label>
+              </div>
+            </div>        
+            <div class="col-12" *ngIf="variables.length > 0">
+              <div class="card">
+                <div class="card-body">
+                  <ul class="variables">
+                    <li *ngFor="let item of variables;let i = index" (click)="copyText(item)"
+                    popover="Copiado!" containerClass="custom-tooltip" 
+                    [outsideClick]="true">
+                      {{item}}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mv-input-group has-label" >
+                <label class="title">Mensaje</label>
+                <angular-editor formControlName="cuerpoHtml" [config]="editorConfig"
+                  [ngClass]="{'is-invalid': submittedForm && f.cuerpoHtml.errors}"></angular-editor>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="d-none">
+          </button>
+        </form>
+      </custom-table-content>
+    </custom-datatable>
+  </master-admin-content>

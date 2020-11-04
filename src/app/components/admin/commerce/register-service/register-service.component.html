@@ -1,0 +1,152 @@
+<master-admin-content placeholder="header">
+    <div class="custom-header row">
+        <div class="col-4 offset-1 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-th-solid"></span>
+                </span>
+                <input type="text" class="mv-input" value="Registro de servicios" readonly>
+            </div>
+        </div>
+        <div class="col-4 offset-2 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-search-solid"></span>
+                </span>
+                <input type="text" class="mv-input" [(ngModel)]="searcherText">
+            </div>
+        </div>
+    </div>
+</master-admin-content>
+
+<master-admin-content placeholder="main">
+    <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+        hasActions="yes" keyValue="idServicio" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+        (onCancel)="cancelForm()" (onActiveItem)="changeState($event)" newitem="false">
+
+        <custom-table-content placeholder="custom-form">
+            <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-2 text-center align-self-center">
+                        <img [src]="serviceImage" alt="" class="img-thumbnail image horizontal" />
+                    </div>
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="col-6 mv-input-group has-label">
+                                <label class="title">Nombre</label>
+                                <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                                    placeholder="Nombre" formControlName="nombre"
+                                    [ngClass]="{ 'is-invalid': submittedForm && f.nombre.errors }">
+                            </div>
+                            <div class="col-6">
+                                <div class="mv-input-group has-label">
+                                    <label class="title">Seleccione el tipo de plan</label>
+                                    <label>
+                                        <select formControlName="idTipoServicio" id="idTipoServicio"
+                                            (keydown.esc)="cancelForm()" class="mv-input-form"
+                                            [ngClass]="{ 'is-invalid': submittedForm && f.idTipoServicio.errors }">
+                                            <option value="">Seleccione</option>
+                                            <option *ngFor="let tipServ of JSONdataTiposServicio"
+                                                [value]="tipServ.idTipoServicio">
+                                                {{tipServ.descripcion}}
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mv-input-group has-label">
+                                    <label class="title">Seleccione el perfil</label>
+                                    <label>
+                                        <select formControlName="idPerfilComercio" id="idPerfilComercio"
+                                            (keydown.esc)="cancelForm()" class="mv-input-form"
+                                            [ngClass]="{ 'is-invalid': submittedForm && f.idPerfilComercio.errors }">
+                                            <option value="">Seleccione</option>
+                                            <option *ngFor="let perfilcom of JSONdataPerfilComercio"
+                                                [value]="perfilcom.idPerfilComercio">
+                                                {{perfilcom.identificacion}} - {{perfilcom.nombres}}
+                                                {{perfilcom.apellidos}}
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6 mv-input-group has-label">
+                                <label class="title">Valor</label>
+                                <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                                    placeholder="Valor" formControlName="valor"
+                                    [ngClass]="{ 'is-invalid': submittedForm && f.valor.errors }">
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4 mv-input-group has-label">
+                            <label class="title">Cantidad sesiones</label>
+                            <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                                placeholder="cantidadSesiones" formControlName="cantidadSesiones"
+                                [ngClass]="{ 'is-invalid': submittedForm && f.cantidadSesiones.errors }">
+                        </div>
+                        <div class="col-4 mv-input-group has-label">
+                            <label class="title">Duración servicio</label>
+                            <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                                placeholder="Duración servicio" formControlName="duracionTipoServicio"
+                                [ngClass]="{ 'is-invalid': submittedForm && f.duracionTipoServicio.errors }">
+                        </div>
+                        <div class="col-4 mv-input-group has-label">
+                            <label class="title">Descripción</label>
+                            <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                                placeholder="Descripción" formControlName="descripcion"
+                                [ngClass]="{ 'is-invalid': submittedForm && f.descripcion.errors }">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="d-none">
+                </button>
+            </form>
+
+            <div class="row">
+                <hr />
+                <button type="button" class="btn buttonOutline mr-3" (click)="onOpenHistorySolicitud();">Historial de
+                    solicitudes</button>
+                <button *ngIf="bitSolicitudesServicio" type="button" class="btn buttonOutline mr-3"
+                    (click)="onRejectedSolicitud();">Rechazar</button>
+                <button *ngIf="bitSolicitudesServicio" type="button" class="btn-primary"
+                    (click)="onApproveSolicitud(false);">Aprobar</button>
+            </div>
+        </custom-table-content>
+    </custom-datatable>
+
+    <div bsModal #rejectedModal="bs-modal" class="modal fade fade-in-modal" tabindex="-1" role="dialog"
+        aria-labelledby="dialog-sizes-name1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title pull-left">Motivo de rechazo</h4>
+                    <button type="button" class="close pull-right" aria-label="Close" (click)="clearSolicitudForm();">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="modal-form" [formGroup]="registerSolicitudForm" (ngSubmit)="onSubmitSolicitud(true)">
+                    <div class="modal-body">
+                        <div class="col mv-input-group has-label">
+                            <label class="title">Motivo rechazo</label>
+                            <textarea rows="3" type="text" class="form-control form-control-sm"
+                                formControlName="motivoRechazo" placeholder="Motivo rechazo"
+                                [ngClass]="{ 'is-invalid': submittedSolicitudForm && h.motivoRechazo.errors }"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-footer" id="divFooter">
+                        <div class="col-md-12 col-sm-12 mb-3" style="text-align: right">
+                            <button type="button" class="btn buttonOutline mr-3" aria-label="Close"
+                                (click)="clearSolicitudForm();">Cancelar</button>
+                            <button type="submit" class="btn-primary">Aceptar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</master-admin-content>

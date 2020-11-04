@@ -1,0 +1,38 @@
+<custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+    hasActions="yes" keyValue="idTipoServicio" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+    (onCancel)="cancelForm()" (onActiveItem)="changeState($event)">
+
+    <custom-table-content placeholder="custom-form">
+        <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-4 mv-input-group has-label">
+                    <label class="title">Tipo de servicio</label>
+                    <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Tipo de servicio"
+                        formControlName="descripcion"
+                        [ngClass]="{ 'is-invalid': submittedForm && f.descripcion.errors }">
+                </div>
+                <div class="col-4 mv-input-group has-label">
+                    <label class="title">Duración de servicio</label>
+                    <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                        placeholder="Duración de servicio" formControlName="duracion"
+                        [ngClass]="{ 'is-invalid': submittedForm && f.duracion.errors }">
+                </div>
+                <div class="col-4 mv-input-group has-label">
+                    <label class="title">Tipo de servicio</label>
+                    <div class="mv-input-group">
+                        <label>
+                            <select formControlName="tipo" id="tipo" (keydown.esc)="cancelForm()" class="mv-input-form"
+                                [ngClass]="{ 'is-invalid': submittedForm && f.tipo.errors }">
+                                <option value="">Seleccione</option>
+                                <option value="D">Dias</option>
+                                <option value="M">Meses</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="d-none">
+            </button>
+        </form>
+    </custom-table-content>
+</custom-datatable>

@@ -1,0 +1,25 @@
+<master-admin-content placeholder="header">
+  <div class="custom-header row">
+    <div class="col-4 offset-1 pt-2">
+      <mv-custom-select [(ngModel)]="masterSelect" [dataOptions]="dataOptions" [customIcon]="'icon-th-solid'"></mv-custom-select>
+    </div>
+    <div class="col-4 offset-2 pt-2">
+      <div class="mv-input-group">
+        <span class="mv-input-group-prepend">
+          <span class="icon-search-solid"></span>
+        </span>
+        <input type="text" class="mv-input" [(ngModel)]="searcherText">
+      </div>
+    </div>
+  </div>
+</master-admin-content>
+
+<master-admin-content placeholder="main">
+  <app-commerce-types [searcherText]="searcherText" *ngIf="masterSelect && masterSelect.key == 1"></app-commerce-types>
+  <app-service-types [searcherText]="searcherText" *ngIf="masterSelect && masterSelect.key == 2"></app-service-types>
+  <app-countries [searcherText]="searcherText" *ngIf="masterSelect && masterSelect.key == 3"></app-countries>
+  <app-departments [searcherText]="searcherText" *ngIf="masterSelect && masterSelect.key == 4"></app-departments>
+  <app-cities [searcherText]="searcherText" *ngIf="masterSelect && masterSelect.key == 5"></app-cities>
+  <app-neighborhoods [searcherText]="searcherText" *ngIf="masterSelect && masterSelect.key == 6"></app-neighborhoods>
+  <app-currency-types [searcherText]="searcherText" *ngIf="masterSelect && masterSelect.key == 7"></app-currency-types>
+</master-admin-content>

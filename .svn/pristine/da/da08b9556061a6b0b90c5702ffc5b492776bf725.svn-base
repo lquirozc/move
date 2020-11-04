@@ -1,0 +1,80 @@
+<master-admin-content placeholder="header">
+    <div class="custom-header row">
+        <div class="col-4 offset-1 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-th-solid"></span>
+                </span>
+                <input type="text" class="mv-input" value="Preguntas y respuestas" readonly>
+            </div>
+        </div>
+        <div class="col-4 offset-2 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-search-solid"></span>
+                </span>
+                <input type="text" class="mv-input" [(ngModel)]="searcherText">
+            </div>
+        </div>
+    </div>
+</master-admin-content>
+
+<master-admin-content placeholder="main">
+    <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+        hasActions="yes" keyValue="idPregResCentroAyuda" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+        (onCancel)="cancelForm()" (onActiveItem)="changeState($event)">
+
+        <custom-table-content placeholder="custom-form">
+            <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="row">
+                            <div class="col-12 mv-input-group has-label">
+                                <label class="title">Seleccione el tema</label>
+                                <div class="mv-input-group">
+                                    <label>
+                                        <select formControlName="idTemasCentroAyuda" id="idTemasCentroAyuda"
+                                            (keydown.esc)="cancelForm()" class="mv-input-form"
+                                            [ngClass]="{ 'is-invalid': submittedForm && f.idTemasCentroAyuda.errors }">
+                                            <option value="">Seleccione</option>
+                                            <option *ngFor="let tem of JSONdataTemas" [value]="tem.idTemasCentroAyuda">
+                                                {{tem.descripcion}}
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 align-self-center">
+                                <input class="mv-check" type="checkbox" id="aplicaComercio"
+                                    formControlName="aplicaComercio" />
+                                <label for="aplicaComercio">Aplica comercio</label>
+                            </div>
+                            <div class="col-6 align-self-center">
+                                <input class="mv-check" type="checkbox" id="aplicaUsuariosClientes"
+                                    formControlName="aplicaUsuariosClientes" />
+                                <label for="aplicaUsuariosClientes">Aplica clientes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Pregunta</label>
+                        <textarea (keydown.esc)="cancelForm()" class="mv-input-form" placeholder="Pregunta" rows="3"
+                            formControlName="pregunta"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.pregunta.errors }"></textarea>
+                    </div>
+
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Respuesta</label>
+                        <textarea (keydown.esc)="cancelForm()" class="mv-input-form" rows="3" placeholder="Respuesta"
+                            formControlName="respuesta"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.respuesta.errors }"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="d-none">
+                </button>
+            </form>
+        </custom-table-content>
+    </custom-datatable>
+</master-admin-content>

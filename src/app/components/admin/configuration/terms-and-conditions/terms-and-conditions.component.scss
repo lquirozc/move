@@ -1,0 +1,20 @@
+ul.variables {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    li {
+        color: var(--mv-primary-color);
+        margin: 0 3px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+}
+
+.card-body {
+    padding: 1rem;
+}

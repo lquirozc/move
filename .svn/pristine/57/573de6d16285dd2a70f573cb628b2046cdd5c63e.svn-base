@@ -1,0 +1,132 @@
+<master-admin-content placeholder="header">
+    <div class="custom-header row">
+        <div class="col-4 offset-1 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-th-solid"></span>
+                </span>
+                <input type="text" class="mv-input" value="Resoluciones de facturación" readonly>
+            </div>
+        </div>
+        <div class="col-4 offset-2 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-search-solid"></span>
+                </span>
+                <input type="text" class="mv-input" [(ngModel)]="searcherText">
+            </div>
+        </div>
+    </div>
+</master-admin-content>
+
+
+<master-admin-content placeholder="main">
+    <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+        hasActions="yes" keyValue="idResolucion" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+        (onCancel)="cancelForm()" (onActiveItem)="changeState($event)">
+
+        <custom-table-content placeholder="custom-form">
+            <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Descripción</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Descripción"
+                            formControlName="descripcion"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.descripcion.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">N° de resolución</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                            placeholder="N° de resolución" formControlName="numeroResolucion"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.numeroResolucion.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Prefijo</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Prefijo"
+                            formControlName="prefijo" [ngClass]="{ 'is-invalid': submittedForm && f.prefijo.errors }">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">N° Desde</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number" placeholder="N° Desde"
+                            formControlName="numeroDesde"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.numeroDesde.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">N° Hasta</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number" placeholder="N° Hasta"
+                            formControlName="numeroHasta"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.numeroHasta.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">N° Actual</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number" placeholder="N° Actual"
+                            formControlName="numeroActual"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.numeroActual.errors }">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Fecha desde</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Fecha desde"
+                            formControlName="fechaDesde"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.fechaDesde.errors }" bsDatepicker readonly
+                            [bsConfig]="bsOptions">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Fecha Hasta</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text" placeholder="Fecha Hasta"
+                            formControlName="fechaHasta"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.fechaHasta.errors }" bsDatepicker readonly
+                            [bsConfig]="bsOptions">
+                    </div>
+                    <div class="col-4">
+                        <div class="mv-input-group has-label">
+                            <label class="title">Seleccione el pais</label>
+                            <label>
+                                <select formControlName="idPais" id="idPais" (keydown.esc)="cancelForm()"
+                                    class="mv-input-form"
+                                    [ngClass]="{ 'is-invalid': submittedForm && f.idPais.errors }">
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let pais of JSONdataPais" [value]="pais.idPais">
+                                        {{pais.nombre}}
+                                    </option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="mv-input-group has-label">
+                            <label class="title">Seleccione el regimen</label>
+                            <label>
+                                <select formControlName="regimen" id="regimen" (keydown.esc)="cancelForm()"
+                                    class="mv-input-form"
+                                    [ngClass]="{ 'is-invalid': submittedForm && f.regimen.errors }">
+                                    <option value="">Seleccione</option>
+                                    <option value="Regimen comun">Régimen común </option>
+                                    <option value="Regimen simplificado">Régimen simplificado </option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-4 align-self-center">
+                        <input class="mv-check" type="checkbox" id="aplicaIVA" formControlName="aplicaIVA"
+                            (change)="onChangeIncluyeIVA($event)" />
+                        <label for="aplicaIVA">IVA incluido</label>
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Porcentaje de IVA</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                            placeholder="Porcentaje de IVA" formControlName="porcentajeIVA" id="porcentajeIVA"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.porcentajeIVA.errors }" min="0" max="100">
+                    </div>
+                </div>
+                <button type="submit" class="d-none">
+                </button>
+            </form>
+        </custom-table-content>
+    </custom-datatable>
+</master-admin-content>

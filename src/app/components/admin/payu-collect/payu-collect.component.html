@@ -1,0 +1,44 @@
+<form id="modal-form" method="POST" [action]="formLabels.urlCollect" #form>
+    <input id="merchantId" name="merchantId" [value]="formLabels.merchantId" type="hidden">
+    <input id="accountId" name="accountId" [value]="formLabels.accountId" type="hidden">
+    <input id="description" name="description" [value]="formLabels.description" type="hidden">
+    <input id="referenceCode" name="referenceCode" [value]="formLabels.referenceCode" type="hidden">
+    <input id="amount" name="amount" [value]="formLabels.amount" type="hidden">
+    <input id="tax" name="tax" [value]="formLabels.tax" type="hidden">
+    <input id="taxReturnBase" name="taxReturnBase" [value]="formLabels.taxReturnBase" type="hidden">
+    <input id="currency" name="currency" [value]="formLabels.currency" type="hidden">
+    <input id="signature" name="signature" [value]="formLabels.signature" type="hidden">
+    <input id="test" name="test" [value]="formLabels.test" type="hidden">
+    <input id="buyerEmail" name="buyerEmail" [value]="formLabels.buyerEmail" type="hidden">
+    <input id="buyerFullName" name="buyerFullName" [value]="formLabels.buyerFullName" type="hidden">
+    <input id="payerFullName" name="payerFullName" [value]="formLabels.payerFullName" type="hidden">
+    <input id="billingAddress" name="billingAddress" [value]="formLabels.billingAddress" type="hidden">
+    <input id="payerPhone" name="payerPhone" [value]="formLabels.payerPhone" type="hidden">
+    <input id="payerDocument" name="payerDocument" [value]="formLabels.payerDocument" type="hidden">
+    <input id="responseUrl" name="responseUrl" [value]="formLabels.responseUrl" type="hidden">
+    <input id="confirmationUrl" name="confirmationUrl" [value]="formLabels.confirmationUrl" type="hidden">
+    <button class="d-none" type="submit" id="btnSubmit" name="btnSubmit" value="" #collecBtn
+        (click)="form.submit()"></button>
+</form>
+<div class="container">
+    <div class="row pt-5 mb-5">
+        <div class="col-12">
+            <div class="logo">
+                <img src="assets/img/logos/Move.svg">
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <div class="jumbotron text-center">
+                <h5>Espere un momento</h5>
+                <label class="username mb-3 mt-3">Redireccionado a la pasarela de pagos...</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <label class="water-mark">Developed by: Sibo Avance S.A.S </label>
+        </div>
+    </div>
+</div>

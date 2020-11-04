@@ -1,0 +1,80 @@
+<div class="siteContainer">
+    <div id="dvmenuContainer" class="menuContainer_hasBar">
+        <div class="row pageHeader-menu" (click)="backToMainMenu()">
+            <span class="icon-home-solid"></span>
+            <label class="title-home">Inicio</label>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12 p-0 pt-3 d-flex action-menu">
+                <div class="icon-menu">
+                    <span [ngClass]="activatedMenu.icon"></span>
+                </div>
+                <div class="option-menu">
+                    <label class="title-menu">{{activatedMenu.menu}}</label>
+                    <p class="description-menu">{{activatedMenu.description}}</p>
+                </div>
+            </div>
+        </div>
+        <!--toolbarGs,menuGs-->
+        <div class="dynamic-menu">
+            <ul>
+                <li (click)="goToRootMenu(i);" class="dynamic-menu-item" [ngClass]="{'active' : i == activeIndex}"
+                    *ngFor="let item of menuItems;let i = index;">
+                    <label>{{item.name}}</label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="pageContainer">
+        <div class="row pageHeader">
+            <div id="pageHeader" class="col-10">
+                <master-admin-placeholder name="header"></master-admin-placeholder>
+            </div>
+            <div id="userHeader" class="col-2 align-self-center text-center user">
+                <!-- <div>
+                    <img src="./assets/images/logos/logo.png" height="37" width="70" />
+                </div> -->
+
+                <button [popover]="popTemplateUser" [outsideClick]="true" type="button" id="btnUser"
+                    class="btn notranslate btn-popover" data-container="body" data-trigger="focus" data-toggle="popover"
+                    data-placement="bottom" data-html="true">
+                    <span class="icon icon-user-tie-solid"></span>&nbsp;<span id="btnUser1">{{userData.name}}</span>
+                </button>
+
+            </div>
+        </div>
+        <div class="row content">
+            <div class="col container-master">
+                <master-admin-placeholder name="main" class="content-lq"></master-admin-placeholder>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #popTemplateUser>
+    <div id="popover-content-user" class="popover-content-user text-center">
+        <div class="popover-content-user">
+            <div class="row mb-1">
+                <div class="col image">
+                    <img id="imageUser" [src]="companyProfileImg" width="60px" height="60px" />
+                </div>
+            </div>
+            <div class="row m-0">
+                <div id="nameadmin" class="col name notranslate">
+                    {{userData.name}} {{userData.lastName}}
+                </div>
+            </div>
+            <div class="row mb-0" (click)="closeSession()">
+                <div class="col closeSession" (click)="closeSession()">
+                    <button tabindex="107" type="button" class="btn buttonOutline notranslate"
+                        (click)="closeSession()">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</ng-template>
+<router-outlet name="master"></router-outlet>
+
+<!-- <div [@routeAnimations]="getState(o)">
+    <router-outlet #o="outlet" name="master"></router-outlet>
+</div> -->

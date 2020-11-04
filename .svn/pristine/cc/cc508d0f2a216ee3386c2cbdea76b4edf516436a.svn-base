@@ -1,0 +1,165 @@
+import { Injectable } from '@angular/core';
+import {
+    HttpInterceptor,
+    HttpRequest,
+    HttpResponse,
+    HttpHandler,
+    HttpEvent,
+    HttpErrorResponse,
+    HttpClient
+} from '@angular/common/http';
+
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
+import { map, catchError, finalize, switchMap, filter, take } from 'rxjs/operators';
+import { LoaderService } from '../services/loader.service';
+import { Router } from '@angular/router';
+import { SessionService } from '../services/session.service';
+import { AuthService } from '../services/auth.service';
+import { DialogService } from '../services/dialog.service';
+
+
+@Injectable({
+    providedIn: 'root'
+})
+
+export class HttpConfigInterceptor implements HttpInterceptor {
+
+    isRefreshing = false;
+    refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+    onTokenize = false;
+
+    constructor(public errorDialogService: DialogService, public loaderService: LoaderService,
+        private router: Router, private sessionServices: SessionService,
+        private authService: AuthService, private httpClient: HttpClient) { }
+
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
+        this.loaderService.show();
+
+        if (!request.url.includes('/token')) {
+
+            const authData = this.sessionServices.getSessionToken();
+
+            if (authData) {
+
+                const token: string = authData.token;
+
+                if (token != null && token != undefined && token != "undefined") {
+                    request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token) });
+                }
+
+            }
+
+            if (!request.headers.has('Content-Type')) {
+                request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
+            }
+
+            //request = request.clone({ headers: request.headers.set('Access-Control-Allow-Origin', '*') });
+            request = request.clone({ headers: request.headers.set('Accept', 'application/json') });
+
+            //console.log(request);
+        }
+
+        return next.handle(request).pipe(
+            map((event: HttpEvent<any>) => {
+                if (event instanceof HttpResponse) {
+                    //console.log('event--->>>', event);
+                }
+                return event;
+            }),
+            catchError((error: HttpErrorResponse) => {
+                let data = {};
+                data = {
+                    reason: error && error.error && error.error.reason ? error.error.reason : '',
+                    status: error.status,
+                    message: error && error.error && error.error.error ? error.error.error_description : error.message,
+                    exceptionMessage: error && error.error ? error.error.exceptionMessage : error.message,
+                    exceptionType: error && error.error ? error.error.exceptionType : null
+                };
+
+                if (data["status"] != "" && data["status"] == "401") {
+                    this.onTokenize = true;
+                    return this.handle401Error(request, next).pipe(finalize(() => this.loaderService.hide()))
+
+                } else if (data["status"] != "" && data["status"] == "500") {
+
+                    this.errorDialogService.openDialog('error', "Ocurrió un error en la comunicación con el servidor");
+
+                    return throwError('error-->>>' + error);
+
+                } else if (data["status"] != "" && data["status"] == "400") {
+
+                    //BadRequest
+                    if (error.error.error_description != undefined || error.error.message != undefined) {
+                        this.errorDialogService.openDialog('error', error.error.error_description ? error.error.error_description : error.error.message);
+                    }
+
+                    return throwError('error-->>>' + error);
+
+                }
+                else if (data["status"] != "" && data["status"] == "404") {
+
+                    this.errorDialogService.openDialog('error', 'Error 404, no se encontró información');
+
+                    return throwError('error-->>>' + error);
+
+                } else if (data["status"] != "" && data["status"] == "409") {
+
+                    this.errorDialogService.openDialog('error', `Error 409, ${error.error}`);
+
+                    return throwError('error-->>>' + error);
+
+                }
+                else if (data["status"] == "0") {
+
+
+                    this.errorDialogService.openDialog('error', "Ocurrió un error de comunicación con el servidor");
+
+                    return throwError('error-->>>' + error);
+
+                }
+                else {
+                    if (data["message"] != undefined) {
+                        this.errorDialogService.openDialog('error', data["message"]);
+                    }
+                    return throwError('error-->>>' + error);
+                }
+
+            }),
+            finalize(() => { this.loaderService.hide(); })
+        );
+
+    }
+
+    handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+        if (!this.isRefreshing) {
+            this.isRefreshing = true;
+            this.refreshTokenSubject.next(null);
+            this.loaderService.show();
+
+            return this.authService.refreshToken().pipe(
+                switchMap((token: any) => {
+                    this.isRefreshing = false;
+                    this.refreshTokenSubject.next(token.access_token);
+                    return next.handle(this.addToken(request, token.access_token));
+                }));
+
+        } else {
+            return this.refreshTokenSubject.pipe(
+                filter(token => token != null),
+                take(1),
+                switchMap(access_token => {
+                    return next.handle(this.addToken(request, access_token));
+                }));
+        }
+    }
+
+    addToken(request: HttpRequest<any>, token: string) {
+        return request.clone({
+            setHeaders: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+    }
+}
+

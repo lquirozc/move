@@ -1,0 +1,37 @@
+[
+    {
+        "code": "000",
+        "descriptionES": "Usuario y/o contraseña incorrectos",
+        "descriptionEN": "Invalid user or password"
+    },
+    {
+        "code": "001",
+        "descriptionES": "El correo ingresado ya existe!",
+        "descriptionEN": "This email already exists!"
+    },
+    {
+        "code": "002",
+        "descriptionES": "Error desconocido!",
+        "descriptionEN": "Unknow error!"
+    },
+    {
+        "code": "003",
+        "descriptionES": "Esta cuenta no ha sido confirmada, verifica tu bandeja de correo electrónico",
+        "descriptionEN": "This account has not been confirmed, check your email inbox"
+    },
+    {
+        "code": "404",
+        "descriptionES": "No se encontró información!",
+        "descriptionEN": "Not found!"
+    },
+    {
+        "code": "500",
+        "descriptionES": "Ocurrió un error interno en el servidor!",
+        "descriptionEN": "Internal server error!"
+    },
+    {
+        "code": "004",
+        "descriptionES": "Ya existe un registro para este tipo de notificación",
+        "descriptionEN": "A record already exists for this type of notification"
+    }
+]

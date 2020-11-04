@@ -1,0 +1,78 @@
+<master-admin-content placeholder="header">
+    <div class="custom-header row">
+        <div class="col-4 offset-1 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-th-solid"></span>
+                </span>
+                <input type="text" class="mv-input" value="Informe de pagos" readonly>
+            </div>
+        </div>
+        <div class="col-4 offset-2 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-search-solid"></span>
+                </span>
+                <input type="text" class="mv-input" [(ngModel)]="searcherText">
+            </div>
+        </div>
+    </div>
+</master-admin-content>
+
+<master-admin-content placeholder="main">
+    <form [formGroup]="filterForm" (ngSubmit)="getData()">
+        <div class="row filter-container">
+            <div class="col-2 mv-input-group has-label">
+                <label class="title">Identificación</label>
+                <input type="text" formControlName="identificacion" placeholder="Identificación" class="mv-input-form">
+            </div>
+            <div class="col-2 mv-input-group has-label">
+                <label class="title">fecha inicial</label>
+                <input type="text" formControlName="fechaInicial" placeholder="Fecha inicial" bsDatepicker readonly
+                    [bsConfig]="bsOptions" class="mv-input-form">
+            </div>
+            <div class="col-2 mv-input-group has-label">
+                <label class="title">fecha final</label>
+                <input type="text" formControlName="fechaFinal"  placeholder="Fecha final"  bsDatepicker readonly
+                    [bsConfig]="bsOptions" class="mv-input-form">
+            </div>
+            <div class="col-2 mv-input-group has-label">
+                <label class="title">Seleccione el comercio</label>
+                <label>
+                    <select formControlName="idComercio"  id="idComercio" class="mv-input-form">
+                        <option value="">Seleccione</option>
+                        <option *ngFor="let item of JSONComercio" [value]="item.idComercio">
+                            {{item.descripcion}}
+                        </option>
+                    </select>
+                </label>
+            </div>
+            <div class="col-2 has-btn">
+                <button type="submit" class="btn-primary">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+        hasActions="yes" keyValue="idFactura" (onActiveItem)="changeState($event)" newitem="false">
+    </custom-datatable>
+
+    <div class="row summary">
+        <div class="col-2">
+            <label><b>Sub total:</b> {{subTotal| customCurrency}}</label>
+        </div>
+        <div class="col-2">
+            <label>IVA: {{valorIVA| customCurrency}}</label>
+        </div>
+        <div class="col-2">
+            <label>Total: {{total| customCurrency}}</label>
+        </div>
+        <div class="col-2">
+            <label>Comercio: {{valorComercio| customCurrency}}</label>
+        </div>
+        <div class="col-2">
+            <label>Plataforma: {{valorPlataforma| customCurrency}}</label>
+        </div>
+    </div>
+
+</master-admin-content>

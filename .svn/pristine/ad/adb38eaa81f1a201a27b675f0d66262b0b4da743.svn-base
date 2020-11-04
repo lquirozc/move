@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="row pt-5 mb-5">
+        <div class="col-12">
+            <div class="logo">
+                <img src="assets/img/logos/Move.svg">
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <div class="jumbotron text-center">
+                <h2 *ngIf="!isActive">Sólo un paso más...</h2>
+                <h3 *ngIf="isActive">¡Tu cuenta ya ha sido activada! Intenta ingresar con tu usuario y contraseña.</h3>
+                <label class="username mb-3 mt-3"><b>{{userEmail}}</b></label>
+                <p class="text mb-3" *ngIf="!isActive">Gracias por registrarte en <b>Move</b>. Click aquí para activar tu cuenta</p>
+                <button type="button" class="btn-primary" *ngIf="!isActive" (click)="ActivateAccount()">Activar cuenta</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <label class="water-mark">Developed by: Sibo Avance S.A.S </label>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,156 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { SessionService } from 'src/app/services/session.service';
+import { ApiService } from 'src/app/services/api.service';
+import { DialogService } from 'src/app/services/dialog.service';
+
+@Component({
+  selector: 'app-commerce-types',
+  templateUrl: './commerce-types.component.html',
+  styleUrls: ['./commerce-types.component.scss']
+})
+export class CommerceTypesComponent implements OnInit {
+
+  @Input() searcherText: string;
+  isEditing: boolean = false;
+
+  registerForm: FormGroup;
+  userData: any;
+  submittedForm: boolean = false;
+  isNew: boolean = false;
+  JSONdata: Array<any> = [];
+  activeRowIndex?: number = null;
+  itemsPerPage: number = 2;
+  currentPage: number;
+
+  constructor(private formBuilder: FormBuilder,
+    private session: SessionService,
+    private api: ApiService,
+    private dialog: DialogService) {
+    this.userData = this.session.getUserData();
+  }
+
+  getData() {
+
+    this.api.HttpGet(`api/Comercios`).subscribe(res => {
+
+      this.JSONdata = res as Array<any>;
+      //this.fillJSONdata(this.JSONdata);
+
+    }, err => {
+      console.log(err);
+      this.JSONdata = [];
+      //this.fillJSONdata(this.JSONdata);
+    });
+  }
+
+  getItem(id) {
+
+    this.isNew = false;
+    this.isEditing = true;
+
+    this.api.HttpGet(`api/Comercios/${id}`).subscribe(res => {
+
+      this.registerForm.setValue({
+        idComercio: res['idComercio'],
+        descripcion: (res['descripcion'] ? res['descripcion'] : ''),
+        valorMinimoSesion: (res['valorMinimoSesion'] ? res['valorMinimoSesion'] : 0),
+        estado: (res['estado'] ? res['estado'] : false),
+        usuarioCreacion: this.userData.userId,
+        usuarioModificacion: this.userData.userId
+      });
+
+    });
+  }
+
+  changeState(id) {
+
+    this.isNew = false;
+
+    this.api.HttpGet(`api/Comercios/${id}`).subscribe(res => {
+
+      this.registerForm.setValue({
+        idComercio: res['idComercio'],
+        descripcion: (res['descripcion'] ? res['descripcion'] : ''),
+        valorMinimoSesion: (res['valorMinimoSesion'] ? res['valorMinimoSesion'] : ''),
+        estado: (res['estado'] ? res['estado'] : false),
+        usuarioCreacion: this.userData.userId,
+        usuarioModificacion: this.userData.userId
+      });
+
+      this.registerForm.get('estado').setValue(!this.registerForm.get('estado').value);
+      // this.JSONdata[index].estado = !this.JSONdata[index].estado;
+      this.onSubmit(true);
+    });
+  }
+
+  onSubmit(refresh?: boolean) {
+
+    this.submittedForm = true;
+
+    if (this.registerForm.invalid) {
+      this.dialog.openDialog('warning', 'Debes diligenciar los campos obligatiorios');
+      return;
+
+    } else {
+      let data = this.registerForm.value;
+      if (this.isNew) {
+
+        this.api.HttpPost(`api/Comercios`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm(true);
+        });
+
+      } else {
+
+        this.api.HttpPut(`api/Comercios/${data.idComercio}`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm(refresh == null ? true: refresh);
+        });
+
+      }
+    }
+  }
+
+
+  ngOnInit(): void {
+
+    this.initForms();
+    this.getData();
+  }
+
+  get f() { return this.registerForm.controls; }
+
+  initForms() {
+    this.registerForm = this.formBuilder.group({
+      idComercio: null,
+      descripcion: ['', Validators.required],
+      valorMinimoSesion: ['', Validators.required],
+      estado: true,
+      usuarioCreacion: this.userData.userId,
+      usuarioModificacion: this.userData.userId
+    });
+  }
+
+  clearForm(refresh: boolean) {
+    this.cancelForm();
+    if (refresh) {
+      this.getData();
+    }
+  }
+
+  cancelForm() {
+    this.submittedForm = false;
+    this.isEditing = false;
+    this.isNew = false;
+    this.activeRowIndex = null;
+    this.registerForm.reset();
+    this.initForms();
+  }
+
+  // fillJSONdata(JSONdata: Array<any>) {
+
+  //   // this.JSONdataPaginated = JSONdata.slice(0, this.itemsPerPage);
+  //   this.currentPage = 1;
+  // }
+}

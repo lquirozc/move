@@ -1,0 +1,190 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DatatableDataValues } from 'src/app/components/shared/custom-datatable/custom-datatable.component';
+import { SessionService } from 'src/app/services/session.service';
+import { ApiService } from 'src/app/services/api.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { CustomDatatableService } from 'src/app/components/shared/custom-datatable/custom-datatable.module';
+import { TextEditorService } from 'src/app/services/text-editor.service';
+
+
+@Component({
+  selector: 'app-terms-and-conditions',
+  templateUrl: './terms-and-conditions.component.html',
+  styleUrls: ['./terms-and-conditions.component.scss']
+})
+export class TermsAndConditionsComponent implements OnInit {
+
+  searcherText: any;
+  registerForm: FormGroup;
+  userData: any;
+  submittedForm: boolean = false;
+  isEditing = this.dtService.isEditing$.value;
+  maxCharacters: number = 0;
+  editorConfig = this.textEditorService.config;
+
+  JSONdata: Array<any> = [];
+  // JSONdataTiposMensaje: Array<any> = [];
+  JSONdataTiposContrato: Array<any> = [];
+  variables: Array<any> = [];
+  dataValues: Array<DatatableDataValues> = [
+    { id: 'idTerminos', header: 'ID' },
+    { id: 'nombrePlantillaTerminos', header: 'Plantilla' },
+  ];
+
+  constructor(private formBuilder: FormBuilder,
+    private session: SessionService,
+    private api: ApiService,
+    private dialog: DialogService,
+    private dtService: CustomDatatableService,
+    private textEditorService: TextEditorService) {
+    this.userData = this.session.getUserData();
+  }
+
+  getData() {
+
+    this.api.HttpGet(`api/TerminosYCondiciones`).subscribe(res => {
+
+      this.JSONdata = res as Array<any>;
+
+    }, err => {
+      console.log(err);
+      this.JSONdata = [];
+    });
+  }
+
+  // getDataTiposMensaje() {
+
+  //   this.api.HttpGet(`api/PlantillasNotificacion`).subscribe(res => {
+
+  //     this.JSONdataTiposMensaje = res as Array<any>;
+
+  //   }, err => {
+  //     console.log(err);
+  //     this.JSONdataTiposMensaje = [];
+  //   });
+  // }
+
+  getDataTiposNotificacion() {
+
+    this.api.HttpGet(`api/PlantillaTerminosYCondiciones`).subscribe(res => {
+
+      this.JSONdataTiposContrato = res as Array<any>;
+
+    }, err => {
+      console.log(err);
+      this.JSONdataTiposContrato = [];
+    });
+  }
+
+  getItem(id) {
+
+    this.api.HttpGet(`api/TerminosYCondiciones/${id}`).subscribe(res => {
+
+      this.registerForm.setValue({
+        idTerminos: res['idTerminos'],
+        idPlantillaTerminos: (res['idPlantillaTerminos'] ? res['idPlantillaTerminos'] : ''),
+        cuerpoHtml: (res['cuerpoHtml'] ? res['cuerpoHtml'] : ''),
+        usuarioCreacion: this.userData.userId,
+        usuarioModificacion: this.userData.userId
+      });
+    });
+  }
+
+
+  onSubmit() {
+
+    this.submittedForm = true;
+
+    if (this.registerForm.invalid) {
+      this.dialog.openDialog('warning', 'Debes diligenciar los campos obligatiorios');
+      return;
+
+    } else {
+      let data = this.registerForm.value;
+      if (this.dtService.isNew$.getValue()) {
+
+        this.api.HttpPost(`api/TerminosYCondiciones`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      } else {
+
+        this.api.HttpPut(`api/TerminosYCondiciones/${data.idTerminos}`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      }
+    }
+  }
+
+
+
+  onChangeTipoContrato() {
+
+    const val = this.registerForm.get('idPlantillaTerminos').value;
+    if (val != '') {
+      const message = this.JSONdataTiposContrato.filter(x => x.idPlantillaTerminos == val);
+
+      const variable = message[0].variables;
+
+      this.variables = variable.split(',');
+
+      console.log(this.variables);
+
+
+    } else {
+      this.variables = [];
+    }
+  }
+
+  copyText(val: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+  ngOnInit(): void {
+    this.initForms();
+    this.getData();
+    // this.getDataTiposMensaje();
+    this.getDataTiposNotificacion();
+  }
+
+  get f() { return this.registerForm.controls; }
+
+  initForms() {
+    this.registerForm = this.formBuilder.group({
+      idTerminos: null,
+      idPlantillaTerminos: ['', Validators.required],
+      cuerpoHtml: ['', Validators.required],
+      usuarioCreacion: this.userData.userId,
+      usuarioModificacion: this.userData.userId
+    });
+  }
+
+  clearForm() {
+    this.cancelForm();
+    this.getData();
+    this.getDataTiposNotificacion();
+  }
+
+  cancelForm() {
+    this.registerForm.get('idPlantillaTerminos').enable();
+    this.dtService.reset();
+    this.submittedForm = false;
+    this.registerForm.reset();
+    this.initForms();
+  }
+
+}

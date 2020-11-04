@@ -1,0 +1,266 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { SessionService } from 'src/app/services/session.service';
+import { ApiService } from 'src/app/services/api.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { DatatableDataValues } from 'src/app/components/shared/custom-datatable/custom-datatable.component';
+import { Subject } from 'rxjs';
+import { CustomDatatableService } from 'src/app/components/shared/custom-datatable/custom-datatable.module';
+import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+
+@Component({
+  selector: 'app-mailing-services',
+  templateUrl: './mailing-services.component.html',
+  styleUrls: ['./mailing-services.component.scss']
+})
+export class MailingServicesComponent implements OnInit {
+
+  searcherText: any;
+  registerSMTPForm: FormGroup;
+  registerMSMForm: FormGroup;
+  registerSendGridForm: FormGroup;
+  userData: any;
+  submittedSMTPForm: boolean = false;
+  submittedMSMForm: boolean = false;
+  submittedSendGridForm: boolean = false;
+
+  constructor(private formBuilder: FormBuilder,
+    private session: SessionService,
+    private api: ApiService,
+    private dialog: DialogService,
+    private dtService: CustomDatatableService) {
+    this.userData = this.session.getUserData();
+  }
+
+  getData() {
+
+    this.api.HttpGet(`api/ServidorNotificacion`).subscribe(res => {
+
+      if (res[0] != null) {
+
+        this.registerSMTPForm.setValue({
+          idServidorNotificacion: res[0]['idServidorNotificacion'],
+          puertoSMTP: (res[0]['puertoSMTP'] ? res[0]['puertoSMTP'] : ''),
+          usuarioSMTP: (res[0]['usuarioSMTP'] ? res[0]['usuarioSMTP'] : ''),
+          contrasenaSMTP: (res[0]['contrasenaSMTP'] ? res[0]['contrasenaSMTP'] : ''),
+          paisSMS: (res[0]['paisSMS'] ? res[0]['paisSMS'] : ''),
+          indcativoSMS: (res[0]['indcativoSMS'] ? res[0]['indcativoSMS'] : ''),
+          apiKeySMS: (res[0]['apiKeySMS'] ? res[0]['apiKeySMS'] : ''),
+          usuarioSMS: (res[0]['usuarioSMS'] ? res[0]['usuarioSMS'] : ''),
+          contrasenaSMS: (res[0]['contrasenaSMS'] ? res[0]['contrasenaSMS'] : ''),
+          apiKeySendGrid: (res[0]['apiKeySendGrid'] ? res[0]['apiKeySendGrid'] : ''),
+          usuarioSendGrid: (res[0]['usuarioSendGrid'] ? res[0]['usuarioSendGrid'] : ''),
+          contrasenaSendGrid: (res[0]['contrasenaSendGrid'] ? res[0]['contrasenaSendGrid'] : ''),
+          apiKeyFirebase: (res[0]['apiKeyFirebase'] ? res[0]['apiKeyFirebase'] : ''),
+          usuarioCreacion: this.userData.userId,
+          usuarioModificacion: this.userData.userId
+        });
+
+        this.registerMSMForm.setValue({
+          idServidorNotificacion: res[0]['idServidorNotificacion'],
+          puertoSMTP: (res[0]['puertoSMTP'] ? res[0]['puertoSMTP'] : ''),
+          usuarioSMTP: (res[0]['usuarioSMTP'] ? res[0]['usuarioSMTP'] : ''),
+          contrasenaSMTP: (res[0]['contrasenaSMTP'] ? res[0]['contrasenaSMTP'] : ''),
+          paisSMS: (res[0]['paisSMS'] ? res[0]['paisSMS'] : ''),
+          indcativoSMS: (res[0]['indcativoSMS'] ? res[0]['indcativoSMS'] : ''),
+          apiKeySMS: (res[0]['apiKeySMS'] ? res[0]['apiKeySMS'] : ''),
+          usuarioSMS: (res[0]['usuarioSMS'] ? res[0]['usuarioSMS'] : ''),
+          contrasenaSMS: (res[0]['contrasenaSMS'] ? res[0]['contrasenaSMS'] : ''),
+          apiKeySendGrid: (res[0]['apiKeySendGrid'] ? res[0]['apiKeySendGrid'] : ''),
+          usuarioSendGrid: (res[0]['usuarioSendGrid'] ? res[0]['usuarioSendGrid'] : ''),
+          contrasenaSendGrid: (res[0]['contrasenaSendGrid'] ? res[0]['contrasenaSendGrid'] : ''),
+          apiKeyFirebase: (res[0]['apiKeyFirebase'] ? res[0]['apiKeyFirebase'] : ''),
+          usuarioCreacion: this.userData.userId,
+          usuarioModificacion: this.userData.userId
+        });
+
+        this.registerSendGridForm.setValue({
+          idServidorNotificacion: res[0]['idServidorNotificacion'],
+          puertoSMTP: (res[0]['puertoSMTP'] ? res[0]['puertoSMTP'] : ''),
+          usuarioSMTP: (res[0]['usuarioSMTP'] ? res[0]['usuarioSMTP'] : ''),
+          contrasenaSMTP: (res[0]['contrasenaSMTP'] ? res[0]['contrasenaSMTP'] : ''),
+          paisSMS: (res[0]['paisSMS'] ? res[0]['paisSMS'] : ''),
+          indcativoSMS: (res[0]['indcativoSMS'] ? res[0]['indcativoSMS'] : ''),
+          apiKeySMS: (res[0]['apiKeySMS'] ? res[0]['apiKeySMS'] : ''),
+          usuarioSMS: (res[0]['usuarioSMS'] ? res[0]['usuarioSMS'] : ''),
+          contrasenaSMS: (res[0]['contrasenaSMS'] ? res[0]['contrasenaSMS'] : ''),
+          apiKeySendGrid: (res[0]['apiKeySendGrid'] ? res[0]['apiKeySendGrid'] : ''),
+          usuarioSendGrid: (res[0]['usuarioSendGrid'] ? res[0]['usuarioSendGrid'] : ''),
+          contrasenaSendGrid: (res[0]['contrasenaSendGrid'] ? res[0]['contrasenaSendGrid'] : ''),
+          apiKeyFirebase: (res[0]['apiKeyFirebase'] ? res[0]['apiKeyFirebase'] : ''),
+          usuarioCreacion: this.userData.userId,
+          usuarioModificacion: this.userData.userId
+        });
+      }
+
+    });
+  }
+
+  onSubmitSMTP() {
+    this.submittedSMTPForm = true;
+
+    if (this.registerSMTPForm.invalid) {
+      this.dialog.openDialog('warning', 'Debes diligenciar los campos obligatiorios');
+      return;
+
+    } else {
+      let data = this.registerSMTPForm.value;
+      if (this.registerSMTPForm.get("idServidorNotificacion").value == null) {
+
+        this.api.HttpPost(`api/ServidorNotificacion`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      } else {
+
+        this.api.HttpPut(`api/ServidorNotificacion/${data.idServidorNotificacion}`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      }
+
+    }
+
+  }
+
+  onSubmitMSM() {
+    this.submittedMSMForm = true;
+
+    if (this.registerMSMForm.invalid) {
+      this.dialog.openDialog('warning', 'Debes diligenciar los campos obligatiorios');
+      return;
+
+    } else {
+      let data = this.registerMSMForm.value;
+      if (this.registerMSMForm.get("idServidorNotificacion").value == null) {
+
+        this.api.HttpPost(`api/ServidorNotificacion`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      } else {
+
+        this.api.HttpPut(`api/ServidorNotificacion/${data.idServidorNotificacion}`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      }
+
+    }
+
+  }
+
+  onSubmitSendGrid() {
+    this.submittedSendGridForm = true;
+
+    if (this.registerSendGridForm.invalid) {
+      this.dialog.openDialog('warning', 'Debes diligenciar los campos obligatiorios');
+      return;
+
+    } else {
+      let data = this.registerSendGridForm.value;
+      if (this.registerSendGridForm.get("idServidorNotificacion").value == null) {
+
+        this.api.HttpPost(`api/ServidorNotificacion`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      } else {
+
+        this.api.HttpPut(`api/ServidorNotificacion/${data.idServidorNotificacion}`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      }
+
+    }
+
+  }
+
+  ngOnInit(): void {
+    this.initForms();
+    this.getData();
+  }
+
+  get f() { return this.registerSMTPForm.controls; }
+  get g() { return this.registerMSMForm.controls; }
+  get h() { return this.registerSendGridForm.controls; }
+
+  initForms() {
+    this.registerSMTPForm = this.formBuilder.group({
+      idServidorNotificacion: null,
+      puertoSMTP: ['', Validators.required],
+      usuarioSMTP: ['', Validators.required],
+      contrasenaSMTP: ['', Validators.required],
+      paisSMS: '',
+      indcativoSMS: '',
+      apiKeySMS: '',
+      usuarioSMS: '',
+      contrasenaSMS: '',
+      apiKeySendGrid: '',
+      usuarioSendGrid: '',
+      contrasenaSendGrid: '',
+      apiKeyFirebase: '',
+      usuarioCreacion: this.userData.userId,
+      usuarioModificacion: this.userData.userId
+    });
+
+    this.registerMSMForm = this.formBuilder.group({
+      idServidorNotificacion: null,
+      puertoSMTP: '',
+      usuarioSMTP: '',
+      contrasenaSMTP: '',
+      paisSMS: ['', Validators.required],
+      indcativoSMS: ['', Validators.required],
+      apiKeySMS: ['', Validators.required],
+      usuarioSMS: ['', Validators.required],
+      contrasenaSMS: ['', Validators.required],
+      apiKeySendGrid: '',
+      usuarioSendGrid: '',
+      contrasenaSendGrid: '',
+      apiKeyFirebase: '',
+      usuarioCreacion: this.userData.userId,
+      usuarioModificacion: this.userData.userId
+    });
+
+    this.registerSendGridForm = this.formBuilder.group({
+      idServidorNotificacion: null,
+      puertoSMTP: '',
+      usuarioSMTP: '',
+      contrasenaSMTP: '',
+      paisSMS: '',
+      indcativoSMS: '',
+      apiKeySMS: '',
+      usuarioSMS: '',
+      contrasenaSMS: '',
+      apiKeySendGrid: ['', Validators.required],
+      usuarioSendGrid: ['', Validators.required],
+      contrasenaSendGrid: ['', Validators.required],
+      apiKeyFirebase: ['', Validators.required],
+      usuarioCreacion: this.userData.userId,
+      usuarioModificacion: this.userData.userId
+    });
+  }
+
+  clearForm() {
+    this.cancelForm();
+    this.getData();
+
+  }
+
+  cancelForm() {
+    this.dtService.reset();
+    this.submittedSMTPForm = false;
+    this.submittedMSMForm = false;
+    this.submittedSendGridForm = false;
+    this.registerSMTPForm.reset();
+    this.initForms();
+  }
+
+}

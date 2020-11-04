@@ -1,0 +1,30 @@
+<master-admin-content placeholder="header">
+  <div class="custom-header row">
+    <div class="col-4 offset-1 pt-2">
+      <!-- <div class="mv-input-group">
+        <span class="mv-input-group-prepend">
+          <span class="icon-th-solid"></span>
+        </span>
+        <select class="mv-input" type="text">
+          <option value="">Seleccione</option>
+          <option value="">Opción 1</option>
+          <option value="">Opción 2</option>
+          <option value="">Opción 3</option>
+        </select>
+      </div> -->
+      <mv-custom-select [dataOptions]="dataOptions" [customIcon]="'icon-th-solid'"></mv-custom-select>
+    </div>
+    <div class="col-4 offset-2 pt-2">
+      <div class="mv-input-group">
+        <span class="mv-input-group-prepend">
+          <span class="icon-search-solid"></span>
+        </span>
+       <input type="text" class="mv-input">
+      </div>
+    </div>
+  </div>
+</master-admin-content>
+
+<master-admin-content placeholder="main">
+  <p>Content page works</p>
+</master-admin-content>

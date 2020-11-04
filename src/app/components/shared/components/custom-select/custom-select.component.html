@@ -1,0 +1,17 @@
+<div class="mv-custom-select">
+    <div class="mv-form-group">
+        <div class="icon-prepend">
+            <span [ngClass]="customIcon"></span>
+        </div>
+        <div class="selected-option">{{value.value}}</div>
+        <div class="arrow-select">
+            <span class="icon-play-solid"></span>
+        </div>
+        <div class="selector-template" #buttonSelect (click)="activateSelect()"></div>
+    </div>
+    <ul #selectionArea class="mv-custom-list" [ngClass]="{'active': isActive}">
+        <li (click)="selectItem(i)" *ngFor="let item of dataOptions;let i = index">
+            {{item.value}}
+        </li>
+    </ul>
+</div>

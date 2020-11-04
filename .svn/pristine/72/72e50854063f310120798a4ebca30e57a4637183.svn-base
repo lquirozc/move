@@ -1,0 +1,16 @@
+import { Component, OnInit, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-currency-types',
+  templateUrl: './currency-types.component.html',
+  styleUrls: ['./currency-types.component.scss']
+})
+export class CurrencyTypesComponent implements OnInit {
+
+  @Input() searcherText: string;
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}

@@ -1,0 +1,20 @@
+<div class="container-login">
+    <div class="logo">
+        <img src="assets/img/logos/Move.svg">
+    </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()">
+        <div class="mv-input-group mb-3">
+            <span class="mv-input-group-prepend">
+                <span class="icon-user-solid"></span>
+            </span>
+            <input formControlName="user" autocomplete="off" class="mv-input text-center" type="text" placeholder="Usuario">
+        </div>
+        <div class="mv-input-group mb-1">
+            <span class="mv-input-group-prepend">
+                <span class="icon-lock-solid"></span>
+            </span>
+            <input formControlName="password" autocomplete="off" class="mv-input text-center" type="password" placeholder="Contraseña">
+        </div>
+        <button type="submit" class="d-none">Hidden submit button</button>
+    </form>
+</div>

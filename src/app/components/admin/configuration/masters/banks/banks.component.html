@@ -1,0 +1,19 @@
+<custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+    hasActions="yes" keyValue="idBanco" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+    (onCancel)="cancelForm()" (onActiveItem)="changeState($event)">
+
+    <custom-table-content placeholder="custom-form">
+        <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-6 mv-input-group has-label">
+                    <label class="title">Nombre del banco</label>
+                    <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                        placeholder="Nombre del banco" formControlName="descripcion"
+                        [ngClass]="{ 'is-invalid': submittedForm && f.descripcion.errors }">
+                </div>                
+            </div>
+            <button type="submit" class="d-none">
+            </button>
+        </form>
+    </custom-table-content>
+</custom-datatable>

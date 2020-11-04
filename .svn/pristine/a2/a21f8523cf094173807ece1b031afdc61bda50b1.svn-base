@@ -1,0 +1,242 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DatatableDataValues } from 'src/app/components/shared/custom-datatable/custom-datatable.component';
+import { SessionService } from 'src/app/services/session.service';
+import { ApiService } from 'src/app/services/api.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { CustomDatatableService } from 'src/app/components/shared/custom-datatable/custom-datatable.module';
+import { TextEditorService } from 'src/app/services/text-editor.service';
+
+@Component({
+  selector: 'app-notifications',
+  templateUrl: './notifications.component.html',
+  styleUrls: ['./notifications.component.scss']
+})
+export class NotificationsComponent implements OnInit {
+
+  searcherText: any;
+  registerForm: FormGroup;
+  userData: any;
+  submittedForm: boolean = false;
+  isEditing = this.dtService.isEditing$.value;
+  activeTemplateField: string;
+  maxCharacters: number = 0;
+  editorConfig = this.textEditorService.config;
+
+  JSONdata: Array<any> = [];
+  JSONdataTiposMensaje: Array<any> = [];
+  JSONdataTiposNotificacion: Array<any> = [];
+  variables: Array<any> = [];
+  dataValues: Array<DatatableDataValues> = [
+    { id: 'idMensaje', header: 'ID' },
+    { id: 'plantillaNotificacion', header: 'Plantilla' },
+    { id: 'tipoNotificacion', header: 'Tipo notificación' }
+  ];
+
+  constructor(private formBuilder: FormBuilder,
+    private session: SessionService,
+    private api: ApiService,
+    private dialog: DialogService,
+    private dtService: CustomDatatableService,
+    private textEditorService: TextEditorService) {
+    this.userData = this.session.getUserData();
+  }
+
+  getData() {
+
+    this.api.HttpGet(`api/MensajesYNotificacion`).subscribe(res => {
+
+      this.JSONdata = res as Array<any>;
+
+    }, err => {
+      console.log(err);
+      this.JSONdata = [];
+    });
+  }
+
+  getDataTiposMensaje() {
+
+    this.api.HttpGet(`api/PlantillasNotificacion`).subscribe(res => {
+
+      this.JSONdataTiposMensaje = res as Array<any>;
+
+    }, err => {
+      console.log(err);
+      this.JSONdataTiposMensaje = [];
+    });
+  }
+
+  getDataTiposNotificacion() {
+
+    this.api.HttpGet(`api/TiposNotificacion`).subscribe(res => {
+
+      this.JSONdataTiposNotificacion = res as Array<any>;
+
+    }, err => {
+      console.log(err);
+      this.JSONdataTiposNotificacion = [];
+    });
+  }
+
+  getItem(id) {
+
+    this.api.HttpGet(`api/MensajesYNotificacion/${id}`).subscribe(res => {
+
+      this.registerForm.setValue({
+        idMensaje: res['idMensaje'],
+        idTipoNotificacion: (res['idTipoNotificacion'] ? res['idTipoNotificacion'] : ''),
+        idPlantillaNotificacion: (res['idPlantillaNotificacion'] ? res['idPlantillaNotificacion'] : ''),
+        mensaje: (res['mensaje'] ? res['mensaje'] : ''),
+        usuarioCreacion: this.userData.userId,
+        usuarioModificacion: this.userData.userId,
+        emailText: '',
+        smsText: '',
+        pushText: ''
+      });
+
+
+      this.registerForm.get('emailText').setValue(res['mensaje'] ? res['mensaje'] : '');
+      this.registerForm.get('smsText').setValue(res['mensaje'] ? res['mensaje'] : '');
+      this.registerForm.get('pushText').setValue(res['mensaje'] ? res['mensaje'] : '');
+
+      this.registerForm.get('idTipoNotificacion').disable();
+      this.registerForm.get('idPlantillaNotificacion').disable();
+
+      this.onChangeTipoNotificacion();
+
+    });
+  }
+
+
+  onSubmit() {
+
+    if (this.activeTemplateField === 'Email') {
+
+      this.registerForm.get('mensaje').setValue(this.registerForm.get('emailText').value);
+
+    } else if (this.activeTemplateField === 'SMS') {
+
+      this.registerForm.get('mensaje').setValue(this.registerForm.get('smsText').value);
+
+    } else if (this.activeTemplateField === 'Push') {
+
+      this.registerForm.get('mensaje').setValue(this.registerForm.get('pushText').value);
+
+    } else {
+
+      this.registerForm.get('mensaje').setValue('');
+    }
+
+    this.submittedForm = true;
+
+    if (this.registerForm.invalid) {
+      this.dialog.openDialog('warning', 'Debes diligenciar los campos obligatiorios');
+      return;
+
+    } else {
+      let data = this.registerForm.value;
+      if (this.dtService.isNew$.getValue()) {
+
+        this.api.HttpPost(`api/MensajesYNotificacion`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      } else {
+
+        this.api.HttpPut(`api/MensajesYNotificacion/${data.idMensaje}`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      }
+    }
+  }
+
+  onChangeTipoNotificacion() {
+
+    this.registerForm.get('mensaje').setValue('');
+
+    const val = this.registerForm.get('idTipoNotificacion').value;
+    if (val != '') {
+      const templateType = this.JSONdataTiposNotificacion.filter(x => x.idTipoNotificacion == val);
+
+      this.maxCharacters = templateType[0].maxCaracteres;
+      this.activeTemplateField = templateType[0].descripcion;
+    } else {
+      this.maxCharacters = 0;
+      this.activeTemplateField = val;
+      return;
+    }
+  }
+
+  onChangeTipoMensaje() {
+
+    const val = this.registerForm.get('idPlantillaNotificacion').value;
+    if (val != '') {
+      const message = this.JSONdataTiposMensaje.filter(x => x.idPlantillaNotificacion == val);
+
+      const variable = message[0].variables;
+
+      this.variables = variable.split(',');
+
+    } else {
+      this.variables = [];
+    }
+  }
+
+  copyText(val: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+  ngOnInit(): void {
+    this.initForms();
+    this.getData();
+    this.getDataTiposMensaje();
+    this.getDataTiposNotificacion();
+  }
+
+  get f() { return this.registerForm.controls; }
+
+  initForms() {
+    this.registerForm = this.formBuilder.group({
+      idMensaje: null,
+      idTipoNotificacion: ['', Validators.required],
+      idPlantillaNotificacion: ['', Validators.required],
+      mensaje: ['', Validators.required],
+      usuarioCreacion: this.userData.userId,
+      usuarioModificacion: this.userData.userId,
+
+      emailText: [''],
+      smsText: [''],
+      pushText: ['']
+    });
+  }
+
+  clearForm() {
+    this.cancelForm();
+    this.getData();
+    this.getDataTiposMensaje();
+    this.getDataTiposNotificacion();
+  }
+
+  cancelForm() {
+    this.registerForm.get('idTipoNotificacion').enable();
+    this.registerForm.get('idPlantillaNotificacion').enable();
+    this.dtService.reset();
+    this.submittedForm = false;
+    this.registerForm.reset();
+    this.initForms();
+  }
+
+}

@@ -1,0 +1,108 @@
+[
+    {
+        "menu": "Configuración",
+        "description": "Maestros, comisiones, pasarela, términos y condiciones, tipos...",
+        "icon": "icon-cogs-solid",
+        "menuList": [
+            {
+                "name": "Maestros",
+                "root": "/admin/masters"
+            },
+            {
+                "name": "Comisiones",
+                "root": "/admin/comissions"
+            },
+            {
+                "name": "Notificaciones",
+                "root": "/admin/notifications"
+            },
+            {
+                "name": "Portal de pagos",
+                "root": "/admin/payment-gateway"
+            },
+            {
+                "name": "Términos y condiciones",
+                "root": "/admin/terms"
+            },
+            {
+                "name": "Resoluciones de facturación",
+                "root": "/admin/resolution-invoicing"
+            },
+            {
+                "name": "Servicios de mensajería",
+                "root": "/admin/mailing"
+            }
+        ]
+    },
+    {
+        "menu": "Gestión de comercio",
+        "description": "Comercios registrados, aprobaciones, perfiles",
+        "icon": "icon-user-tag-solid",
+        "menuList": [
+            {
+                "name": "Registro de comercio",
+                "root": "/admin/register-commerce"
+            },
+            {
+                "name": "Registro de servicios",
+                "root": "/admin/register-service"
+            },
+            {
+                "name": "Perfiles",
+                "root": "/admin/profiles"
+            }
+        ]
+    },
+    {
+        "menu": "Gestión de cliente",
+        "description": "Registros, compras, datos",
+        "icon": "icon-user-tie-solid",
+        "menuList": [
+            {
+                "name": "",
+                "root": ""
+            }
+        ]
+    },
+    {
+        "menu": "Informe de pagos",
+        "description": "Informes de pagos por clientes",
+        "icon": "icon-money-check-alt-solid",
+        "menuList": [
+            {
+                "name": "",
+                "root": ""
+            }
+        ]
+    },
+    {
+        "menu": "Centro de ayuda",
+        "description": "Solicita ayuda",
+        "icon": "icon-question-circle-solid",
+        "menuList": [
+            {
+                "name": "Temas",
+                "root": "/admin/topics-help-center"
+            },
+            {
+                "name": "Preguntas y respuestas",
+                "root": "/admin/ques-answ-help-center"
+            }
+        ]
+    },
+    {
+        "menu": "Soporte",
+        "description": "Tickets, aperturas y cierre",
+        "icon": "icon-wrench-solid",
+        "menuList": [
+            {
+                "name": "Tickets de clientes",
+                "root": "/admin/tickets-support"
+            },
+            {
+                "name": "Tickets de comercios",
+                "root": "/admin/tickets-support-commerce"
+            }
+        ]
+    }
+]

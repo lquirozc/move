@@ -1,0 +1,64 @@
+<master-admin-content placeholder="header">
+    <div class="custom-header row">
+        <div class="col-4 offset-1 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-th-solid"></span>
+                </span>
+                <input type="text" class="mv-input" value="Comisiones" readonly>
+            </div>
+        </div>
+        <div class="col-4 offset-2 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-search-solid"></span>
+                </span>
+                <input type="text" class="mv-input" [(ngModel)]="searcherText">
+            </div>
+        </div>
+    </div>
+</master-admin-content>
+
+<master-admin-content placeholder="main">
+    <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+        hasActions="yes" keyValue="idComision" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+        (onCancel)="cancelForm()" (onActiveItem)="changeState($event)">
+
+        <custom-table-content placeholder="custom-form">
+            <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Tipo de comisión</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                            placeholder="Tipo de comisión" formControlName="descripcion"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.descripcion.errors }">
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Seleccione el comercio</label>
+                        <div class="mv-input-group">
+                            <label>
+                                <select formControlName="idComercio" id="idComercio" (keydown.esc)="cancelForm()"
+                                    class="mv-input-form"
+                                    [ngClass]="{ 'is-invalid': submittedForm && f.idComercio.errors }">
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let comer of JSONdataComer" [value]="comer.idComercio">
+                                        {{comer.descripcion}}
+                                    </option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Porcentaje de comisión</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                            placeholder="Porcentaje de comisión" formControlName="porcentajeComision"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.porcentajeComision.errors }" min="0"
+                            max="100">
+                    </div>
+                </div>
+                <button type="submit" class="d-none">
+                </button>
+            </form>
+        </custom-table-content>
+    </custom-datatable>
+</master-admin-content>

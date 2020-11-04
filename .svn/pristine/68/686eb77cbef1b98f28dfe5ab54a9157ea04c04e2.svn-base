@@ -1,0 +1,42 @@
+<master-admin-content placeholder="header">
+    <div class="custom-header row">
+        <div class="col-4 offset-1 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-th-solid"></span>
+                </span>
+                <input type="text" class="mv-input" value="Temas" readonly>
+            </div>
+        </div>
+        <div class="col-4 offset-2 pt-2">
+            <div class="mv-input-group">
+                <span class="mv-input-group-prepend">
+                    <span class="icon-search-solid"></span>
+                </span>
+                <input type="text" class="mv-input" [(ngModel)]="searcherText">
+            </div>
+        </div>
+    </div>
+</master-admin-content>
+
+<master-admin-content placeholder="main">
+    <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="10"
+        hasActions="yes" keyValue="idTemasCentroAyuda" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+        (onCancel)="cancelForm()" (onActiveItem)="changeState($event)">
+
+        <custom-table-content placeholder="custom-form">
+            <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-4 mv-input-group has-label">
+                        <label class="title">Tema centro de ayuda</label>
+                        <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                            placeholder="Tema centro de ayuda" formControlName="descripcion"
+                            [ngClass]="{ 'is-invalid': submittedForm && f.descripcion.errors }">
+                    </div>
+                </div>
+                <button type="submit" class="d-none">
+                </button>
+            </form>
+        </custom-table-content>
+    </custom-datatable>
+</master-admin-content>

@@ -1,0 +1,60 @@
+<div class="mv-container-table">
+    <pagination [totalItems]="(JSONdata | customFilter:searcherText).length" [itemsPerPage]="itemsPerPage" [maxSize]="5"
+        [(ngModel)]="currentPage" previousText="&lsaquo;" nextText="&rsaquo;">
+    </pagination>
+    <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <table class="mv-form-table">
+            <thead class="header">
+                <td aria-sort="ascending">ID</td>
+                <td aria-sort="ascending">Tipo de comercio</td>
+                <td aria-sort="ascending">Valor mínimo sesión</td>
+                <td aria-sort="ascending">Estado</td>
+                <td class="actions">Acciones
+                    <span (click)="isEditing = !isEditing; isNew = true;" class="icon-plus-circle-solid"
+                        *ngIf="!isEditing"></span>
+                    <button type="submit" *ngIf="isEditing">
+                        <span class="icon-check-solid"></span>
+                    </button>
+                    <button type="button" (click)="cancelForm()" *ngIf="isEditing">
+                        <span class="icon-times-circle-solid"></span>
+                    </button>
+                </td>
+            </thead>
+            <tbody class="body">
+                <tr class="mv-form-row">
+                    <td colspan="5">
+                        <!-- Formulario aquí!!! -->
+                        <div class="row toggable" [ngClass]="{'active' : isEditing}">
+                            <div class="col-6">
+                                <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                                    placeholder="Tipo de comercio" formControlName="descripcion"
+                                    [ngClass]="{ 'is-invalid': submittedForm && f.descripcion.errors }">
+                            </div>
+                            <div class="col-6">
+                                <input (keydown.esc)="cancelForm()" class="mv-input-form" type="number"
+                                    placeholder="Valor minimo sesión" formControlName="valorMinimoSesion"
+                                    [ngClass]="{ 'is-invalid': submittedForm && f.valorMinimoSesion.errors }">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="mv-row"
+                    *ngFor="let item of JSONdata | customFilter:searcherText | slice:(currentPage-1)*itemsPerPage:currentPage*itemsPerPage; let i = index;"
+                    [ngClass]="{'active-editing': !isNew && isEditing && activeRowIndex == i}">
+                    <td>{{item.idComercio}}</td>
+                    <td>{{item.descripcion}}</td>
+                    <td>{{item.valorMinimoSesion | customCurrency}}</td>
+                    <td class="state">
+                        <span class="icon-check-solid" [ngClass]="{'active': item.estado}"
+                            (click)="changeState(i); activeRowIndex = i;"></span>
+                    </td>
+                    <td class="actions">
+                        <span class="icon-pencil-alt-solid"
+                            [ngClass]="{'active-editing': !isNew && isEditing && activeRowIndex == i}"
+                            (click)="getItem(i); activeRowIndex = i;"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,155 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { SessionService } from 'src/app/services/session.service';
+import { ApiService } from 'src/app/services/api.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { DatatableDataValues } from 'src/app/components/shared/custom-datatable/custom-datatable.component';
+import { CustomDatatableService } from 'src/app/components/shared/custom-datatable/custom-datatable.module';
+
+@Component({
+  selector: 'app-cities',
+  templateUrl: './cities.component.html',
+  styleUrls: ['./cities.component.scss']
+})
+export class CitiesComponent implements OnInit {
+
+  @Input() searcherText: string;
+
+  registerForm: FormGroup;
+  userData: any;
+  submittedForm: boolean = false;
+  JSONdata: Array<any> = [];
+  JSONdataDepto: Array<any> = [];
+  dataValues: Array<DatatableDataValues> = [
+    { id: 'idCiudad', header: 'ID' },
+    { id: 'nombre', header: 'Nombre' },
+    { id: 'nombreDepartamento', header: 'Departamento' },
+  ];
+
+  constructor(private formBuilder: FormBuilder,
+    private session: SessionService,
+    private api: ApiService,
+    private dialog: DialogService,
+    private dtService: CustomDatatableService) {
+    this.userData = this.session.getUserData();
+  }
+
+  getData() {
+
+    this.api.HttpGet(`api/Ciudades`).subscribe(res => {
+
+      this.JSONdata = res as Array<any>;
+      this.getDataDepto();
+
+    }, err => {
+      console.log(err);
+      this.JSONdata = [];     
+    });
+  }
+
+  getDataDepto() {
+    this.api.HttpGet(`api/Departamentos`).subscribe(res => {
+      let data = res as Array<any>;
+      this.JSONdataDepto = data.filter(x => x.estado == true);
+    }, err => {
+      console.log(err);
+      this.JSONdataDepto = [];
+
+    });
+  }
+
+  getItem(id) {
+
+    this.api.HttpGet(`api/Ciudades/${id}`).subscribe(res => {
+
+      this.registerForm.setValue({
+        idCiudad: res['idCiudad'],
+        idDepartamento: res['idDepartamento'],
+        nombre: (res['nombre'] ? res['nombre'] : ''),
+        estado: (res['estado'] ? res['estado'] : false),
+        usuarioCreacion: this.userData.userId,
+        usuarioModificacion: this.userData.userId
+      });
+
+    });
+  }
+
+  changeState(id) {
+
+    this.api.HttpGet(`api/Ciudades/${id}`).subscribe(res => {
+
+      this.registerForm.setValue({
+        idCiudad: res['idCiudad'],
+        idDepartamento: res['idDepartamento'],
+        nombre: (res['nombre'] ? res['nombre'] : ''),
+        estado: (res['estado'] ? res['estado'] : false),
+        usuarioCreacion: this.userData.userId,
+        usuarioModificacion: this.userData.userId
+      });
+
+      this.registerForm.get('estado').setValue(!this.registerForm.get('estado').value);
+      this.onSubmit();
+    });
+  }
+
+  onSubmit() {
+
+    this.submittedForm = true;
+
+    if (this.registerForm.invalid) {
+      this.dialog.openDialog('warning', 'Debes diligenciar los campos obligatiorios');
+      return;
+
+    } else {
+      let data = this.registerForm.value;
+      if (this.dtService.isNew$.getValue()) {
+
+        this.api.HttpPost(`api/Ciudades`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      } else {
+
+        this.api.HttpPut(`api/Ciudades/${data.idCiudad}`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      }
+    }
+  }
+
+  ngOnInit(): void {
+
+    this.initForms();
+    this.getData();
+  }
+
+  get f() { return this.registerForm.controls; }
+
+  initForms() {
+    this.registerForm = this.formBuilder.group({
+      idCiudad: null,
+      idDepartamento: ['', Validators.required],
+      nombre: ['', Validators.required],
+      estado: true,
+      usuarioCreacion: this.userData.userId,
+      usuarioModificacion: this.userData.userId
+    });
+  }
+
+  clearForm() {
+    this.cancelForm();
+    this.getData();
+
+  }
+
+  cancelForm() {
+    this.dtService.reset();
+    this.submittedForm = false;
+    this.registerForm.reset();
+    this.initForms();
+  }
+
+}

@@ -1,0 +1,18 @@
+.container-login {
+    position: absolute;
+    width: 280px;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    .logo {
+        img {
+            width: 100%;
+        }
+    }
+
+    .mv-input-group{
+        width: 100%;
+    }
+}

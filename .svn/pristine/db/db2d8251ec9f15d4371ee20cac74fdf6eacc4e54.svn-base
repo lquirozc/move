@@ -1,0 +1,16 @@
+import { Component, OnInit, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-neighborhoods',
+  templateUrl: './neighborhoods.component.html',
+  styleUrls: ['./neighborhoods.component.scss']
+})
+export class NeighborhoodsComponent implements OnInit {
+
+  @Input() searcherText: string;
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}

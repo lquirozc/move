@@ -1,0 +1,176 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { DatatableDataValues } from 'src/app/components/shared/custom-datatable/custom-datatable.component';
+import { SessionService } from 'src/app/services/session.service';
+import { ApiService } from 'src/app/services/api.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { CustomDatatableService } from 'src/app/components/shared/custom-datatable/custom-datatable.module';
+import { TextEditorService } from 'src/app/services/text-editor.service';
+
+@Component({
+  selector: 'app-requests',
+  templateUrl: './requests.component.html',
+  styleUrls: ['./requests.component.scss']
+})
+export class RequestsComponent implements OnInit {
+
+  searcherText: any;
+  registerForm: FormGroup;
+  userData: any;
+  submittedForm: boolean = false;
+  isEditing = this.dtService.isEditing$.value;
+  maxCharacters: number = 0;
+  editorConfig = this.textEditorService.config;
+
+  JSONdata: Array<any> = [];
+  JSONdataTiposSolicitud: Array<any> = [];
+  variables: Array<any> = [];
+  dataValues: Array<DatatableDataValues> = [
+    { id: 'idMensajeSolicitud', header: 'ID' },
+    { id: 'nombrePlantillaSolicitud', header: 'Plantilla' },
+  ];
+
+  constructor(private formBuilder: FormBuilder,
+    private session: SessionService,
+    private api: ApiService,
+    private dialog: DialogService,
+    private dtService: CustomDatatableService,
+    private textEditorService: TextEditorService) {
+    this.userData = this.session.getUserData();
+  }
+
+  getData() {
+
+    this.api.HttpGet(`api/MensajeSolicitud`).subscribe(res => {
+
+      this.JSONdata = res as Array<any>;
+
+    }, err => {
+      console.log(err);
+      this.JSONdata = [];
+    });
+  }
+
+  getDataTiposNotificacion() {
+
+    this.api.HttpGet(`api/PlantillaSolicitud`).subscribe(res => {
+
+      this.JSONdataTiposSolicitud = res as Array<any>;
+
+    }, err => {
+      console.log(err);
+      this.JSONdataTiposSolicitud = [];
+    });
+  }
+
+  getItem(id) {
+
+    this.api.HttpGet(`api/MensajeSolicitud/${id}`).subscribe(res => {
+
+      this.registerForm.setValue({
+        idMensajeSolicitud: res['idMensajeSolicitud'],
+        idPlantillaSolicitud: (res['idPlantillaSolicitud'] ? res['idPlantillaSolicitud'] : ''),
+        cuerpoHtml: (res['cuerpoHtml'] ? res['cuerpoHtml'] : ''),
+        usuarioCreacion: this.userData.userId,
+        usuarioModificacion: this.userData.userId
+      });
+    });
+  }
+
+
+  onSubmit() {
+
+    this.submittedForm = true;
+
+    if (this.registerForm.invalid) {
+      this.dialog.openDialog('warning', 'Debes diligenciar los campos obligatiorios');
+      return;
+
+    } else {
+      let data = this.registerForm.value;
+      if (this.dtService.isNew$.getValue()) {
+
+        this.api.HttpPost(`api/MensajeSolicitud`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      } else {
+
+        this.api.HttpPut(`api/MensajeSolicitud/${data.idMensajeSolicitud}`, data).subscribe(res => {
+          this.dialog.openDialog('success', 'Guardado con éxito');
+          this.clearForm();
+        });
+
+      }
+    }
+  }
+
+
+
+  onChangeTipoSolicitud() {
+
+    const val = this.registerForm.get('idPlantillaSolicitud').value;
+    if (val != '') {
+      const message = this.JSONdataTiposSolicitud.filter(x => x.idPlantillaSolicitud == val);
+
+      const variable = message[0].variables;
+
+      this.variables = variable.split(',');
+
+      console.log(this.variables);
+
+
+    } else {
+      this.variables = [];
+    }
+  }
+
+  copyText(val: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+  ngOnInit(): void {
+    this.initForms();
+    this.getData();
+    // this.getDataTiposMensaje();
+    this.getDataTiposNotificacion();
+  }
+
+  get f() { return this.registerForm.controls; }
+
+  initForms() {
+    this.registerForm = this.formBuilder.group({
+      idMensajeSolicitud: null,
+      idPlantillaSolicitud: ['', Validators.required],
+      cuerpoHtml: ['', Validators.required],
+      usuarioCreacion: this.userData.userId,
+      usuarioModificacion: this.userData.userId
+    });
+  }
+
+  clearForm() {
+    this.cancelForm();
+    this.getData();
+    this.getDataTiposNotificacion();
+  }
+
+  cancelForm() {
+    this.registerForm.get('idPlantillaSolicitud').enable();
+    this.dtService.reset();
+    this.submittedForm = false;
+    this.registerForm.reset();
+    this.initForms();
+  }
+
+}

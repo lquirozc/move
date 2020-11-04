@@ -1,0 +1,118 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { NotFoundPageComponent } from './components/shared/not-found-page/not-found-page.component';
+import { LoginAdminComponent } from './components/admin/login-admin/login-admin.component';
+import { MasterAdminComponent } from './components/admin/master-admin/master-admin.component';
+import { MastersComponent } from './components/admin/configuration/masters/masters.component';
+import { MenuAdminComponent } from './components/admin/menu-admin/menu-admin.component';
+import { NotificationsComponent } from './components/admin/configuration/notifications/notifications.component';
+import { ComissionsComponent } from './components/admin/configuration/comissions/comissions.component';
+import { PaymentGatewayComponent } from './components/admin/configuration/payment-gateway/payment-gateway.component';
+import { TermsAndConditionsComponent } from './components/admin/configuration/terms-and-conditions/terms-and-conditions.component';
+import { ResolutionInvoicingsComponent } from './components/admin/configuration/resolution-invoicings/resolution-invoicings.component';
+import { MailingServicesComponent } from './components/admin/configuration/mailing-services/mailing-services.component';
+
+
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login', 
+    component: LoginAdminComponent
+  },
+  {
+    path: 'menu', 
+    component: MenuAdminComponent
+  },
+  {
+    path: 'admin/masters',
+    component: MasterAdminComponent,
+    children: [
+      {
+        outlet: 'master',
+        path: '',
+        component: MastersComponent
+      }
+    ]
+  },
+  {
+    path: 'admin/notifications',
+    component: MasterAdminComponent,
+    children: [
+      {
+        outlet: 'master',
+        path: '',
+        component: NotificationsComponent
+      }
+    ]
+  },
+  {
+    path: 'admin/comissions',
+    component: MasterAdminComponent,
+    children: [
+      {
+        outlet: 'master',
+        path: '',
+        component: ComissionsComponent
+      }
+    ]
+  },
+  {
+    path: 'admin/payment-gateway',
+    component: MasterAdminComponent,
+    children: [
+      {
+        outlet: 'master',
+        path: '',
+        component: PaymentGatewayComponent
+      }
+    ]
+  },
+  {
+    path: 'admin/terms',
+    component: MasterAdminComponent,
+    children: [
+      {
+        outlet: 'master',
+        path: '',
+        component: TermsAndConditionsComponent
+      }
+    ]
+  },
+  {
+    path: 'admin/resolution-invoicing',
+    component: MasterAdminComponent,
+    children: [
+      {
+        outlet: 'master',
+        path: '',
+        component: ResolutionInvoicingsComponent
+      }
+    ]
+  },
+  {
+    path: 'admin/mailing',
+    component: MasterAdminComponent,
+    children: [
+      {
+        outlet: 'master',
+        path: '',
+        component: MailingServicesComponent
+      }
+    ]
+  },
+  //Don't touch this code
+  {
+    path: '**',
+    component: NotFoundPageComponent
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }

@@ -1,0 +1,26 @@
+<custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText" itemsPerPage="5"
+    hasActions="yes" keyValue="idDepartamento" (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()"
+    (onCancel)="cancelForm()" (onActiveItem)="changeState($event)">
+
+    <custom-table-content placeholder="custom-form">
+        <form id="modal-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-6">
+                    <input (keydown.esc)="cancelForm()" class="mv-input-form" type="text"
+                        placeholder="Nombre del departamento" formControlName="nombre"
+                        [ngClass]="{ 'is-invalid': submittedForm && f.nombre.errors }">
+                </div>
+                <div class="col-6">
+                    <select formControlName="idPais" id="idPais" (keydown.esc)="cancelForm()" class="mv-input-form">
+                        <option [value]="0">Seleccione el pais</option>
+                        <option *ngFor="let pais of JSONdataPaises" [value]="pais.idPais">
+                            {{pais.nombre}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="d-none">
+            </button>
+        </form>
+    </custom-table-content>
+</custom-datatable>

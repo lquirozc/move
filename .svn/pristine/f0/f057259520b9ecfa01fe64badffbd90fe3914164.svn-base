@@ -1,0 +1,38 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Detalle de ticket</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cancelForm()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form id="modal-form" [formGroup]="registerDetailForm">
+    <div class="modal-body">
+        <custom-datatable [JSONdata]="JSONdata" [dataValues]="dataValues" [searcherText]="searcherText"
+            itemsPerPage="10" hasActions="yes" noPadding="yes" keyValue="idDetalleTiketsSoporte"
+            (onItemEdit)="getItem($event)" (onSubmit)="onSubmit()" (onCancel)="cancelForm()">
+            <div class="row">
+                <div class="col-4">
+                    <div class="mv-input-group has-label">
+                        <label class="title">Seleccione el estado</label>
+                        <label>
+                            <select formControlName="estado" id="estado" (keydown.esc)="cancelForm()"
+                                class="mv-input-form" [ngClass]="{ 'is-invalid': submittedForm && f.estado.errors }">
+                                <option value="">Seleccione</option>
+                                <option value="ABIERTO">ABIERTO</option>
+                                <option value="CERRADO">CERRADO</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mv-input-group has-label">
+                        <label class="title">Mensaje</label>
+                        <angular-editor formControlName="cuerpoHtml" [config]="editorConfig"
+                            [ngClass]="{'is-invalid': submittedForm && f.cuerpoHtml.errors}"></angular-editor>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="d-none">
+            </button>
+        </custom-datatable>
+    </div>
+</form>

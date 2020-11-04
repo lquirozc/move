@@ -1,0 +1,49 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CustomErrorsService {
+
+  preferredLanguage: string = 'es';
+
+  constructor(private httpClient: HttpClient) {}
+
+  _getErrorsDictionary = function (errorCode: string): any {
+
+    let promise = new Promise((resolve, reject) => {
+      try {
+
+        this.httpClient.get('assets/json/errors.json').subscribe(res => {
+
+          const errorsJSON = res
+          const error = errorsJSON.filter(x => x.code == errorCode);
+
+          if (error != undefined && error != null && error.length > 0) {
+
+            if (this.preferredLanguage === 'es') {
+
+              resolve(error[0].descriptionES);
+
+            } else if (this.preferredLanguage === 'en') {
+
+              resolve(error[0].descriptionEN);
+            }
+
+
+          } else {
+            reject(null);
+          }
+        });
+
+      } catch (error) {
+        reject(null);
+      }
+    });
+
+    return promise
+  }
+
+  public getErrorsDictionary = this._getErrorsDictionary;
+}
